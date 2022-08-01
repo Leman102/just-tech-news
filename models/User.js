@@ -1,5 +1,7 @@
 //Import Model and datatypes 
 const { Model, DataTypes } = require('sequelize');
+//import bcrypt package to hash passwords
+const bcrypt = require('bcrypt');
 
 const sequelize = require('../config/connection');
 
@@ -34,7 +36,7 @@ User.init(
         unique: true,
         // if allowNull is set to false, we can run our data through validators before creating the table data
         validate: {
-          isEmail: true
+            isEmail: true
         }
     },
     // define a password column
@@ -42,12 +44,26 @@ User.init(
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          // this means the password must be at least four characters long
-          len: [4]
+            // this means the password must be at least four characters long
+            len: [4]
         }
     }
   },
   {
+    //To add hooks must be pass in a new object = hooks
+    hooks: {
+        // set up beforeCreate lifecycle "hook" functionality in an async function
+        async beforeCreate(newUserData){
+            newUserData.password = await bcrypt.hash(newUserData.password, 10);
+            return newUserData;
+        },
+        //set up beforeUpdate lifecycle "hook" functionality in an async function
+        //need to add an option to the query call  user-routes.js file { individualHooks: true }
+        async beforeUpdate(updateUserData) {
+            updateUserData.password = await bcrypt.hash(updateUserData.password, 10);
+            return updateUserData;
+        }
+    },
     // TABLE CONFIGURATION OPTIONS GO HERE
     // pass in our imported sequelize connection (the direct connection to our database)
     sequelize,

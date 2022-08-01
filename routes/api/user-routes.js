@@ -3,7 +3,7 @@ const { User } = require('../../models');
 
 //Get /api/users
 router.get('/', (req, res) => {
-    //Access the User model and run .findAll() method (Select * from Users)
+    //Access the User model and run .findAll() method (Select * from Users) finALL returns an array
     User.findAll({
         //exclude password info from get requests
         attributes: { exclude: ['password']}
@@ -58,6 +58,8 @@ router.put('/:id', (req, res) => {
     //expects {username: '',email:'',password:''}
     //if req.body has exact key/value pairs to match the model UPDATE users SET username = "leman", email = "leman@email.com", password = "abc1234" WHERE id = 1;
     User.update(req.body, {
+        //adding bcrypt hook to hash password when updated
+        individualHooks: true,
         where: {
             id: req.params.id
         }
