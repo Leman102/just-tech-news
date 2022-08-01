@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User, Post, Vote } = require('../../models');
 
 //Get /api/users
 router.get('/', (req, res) => {
@@ -20,10 +20,22 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
     //access the user model and run .findOne() method (SELECT * FROM users WHERE id = 1)
     User.findOne({
-        attributes: { exclude: ['password']},
+        attributes: {exclude: ['password']},
         where: {
             id: req.params.id
-        }
+        },
+        include: [
+            {
+                model: Post,
+                attributes: ['id', 'title', 'post_url', 'created_at']
+            },
+            {
+                model: Post,
+                attributes: ['title'],
+                through: Vote,
+                as: 'voted_posts'
+            }
+        ]
     }).then(dbUserData => {
         if(!dbUserData){
             res.status(404).json({message: 'No user found whit this id'});
