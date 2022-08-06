@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { User, Post, Vote, Comment } = require('../../models');
 
+
 //Get /api/users
 router.get('/', (req, res) => {
     //Access the User model and run .findAll() method (Select * from Users) finALL returns an array
@@ -58,7 +59,7 @@ router.get('/:id', (req, res) => {
 
 
 //POST /api/users
-router.post('/', (req, res) => {
+router.post('/',  (req, res) => {
     //expects {username: '',email:'',password:''} INSERT INTO users (username, email, password) VALUES    ("leman", "leman@email.com", "abc1234");
     User.create({
         username:req.body.username,
@@ -83,7 +84,7 @@ router.post('/', (req, res) => {
 });
 
 //POST login route
-router.post('/login', (req, res) => {
+router.post('/login',  (req, res) => {
     //expects {email"leman@email.com", password:abc1234}
     User.findOne({
         where: {
@@ -113,7 +114,7 @@ router.post('/login', (req, res) => {
 });
 
 //add logout route
-router.post('/logout',(req,res) => {
+router.post('/logout',  (req,res) => {
     if (req.session.loggedIn) {
         req.session.destroy(() => {
             res.status(204).end();
@@ -125,7 +126,7 @@ router.post('/logout',(req,res) => {
 });
 
 //PUT /api/users/1
-router.put('/:id', (req, res) => {
+router.put('/:id',  (req, res) => {
     //expects {username: '',email:'',password:''}
     //if req.body has exact key/value pairs to match the model UPDATE users SET username = "leman", email = "leman@email.com", password = "abc1234" WHERE id = 1;
     User.update(req.body, {
@@ -149,7 +150,7 @@ router.put('/:id', (req, res) => {
 
 
 //DELETE /api/users/1
-router.delete('/:id', (req, res) => {
+router.delete('/:id',  (req, res) => {
     User.destroy({
         where: {
             id: req.params.id

@@ -2,7 +2,7 @@ const router = require('express').Router();
 //adding models and sequelize
 const sequelize = require('../config/connection');
 const { Post, User, Comment } = require('../models');
-const { route } = require('./api');
+//const { route } = require('./api');
 
 //send response using render to use a template engine
 /*
