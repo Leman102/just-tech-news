@@ -2,6 +2,8 @@ const express = require('express');
 const routes = require('./controllers');
 const sequelize = require('./config/connection');
 const path = require('path');
+//import helper function
+const helpers = require('./utils/helpers');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -12,13 +14,13 @@ const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const sess = {
-  secret: 'Super secret secret',
-  cookie: {},
-  resave: false,
-  saveUninitialized: true,
-  store: new SequelizeStore({
-    db: sequelize
-  })
+    secret: 'Super secret secret',
+    cookie: {},
+    resave: false,
+    saveUninitialized: true,
+    store: new SequelizeStore({
+        db: sequelize
+    })
 };
 
 app.use(session(sess));
@@ -34,7 +36,8 @@ app.use(routes);
 
 //set up handlebars.js as thr spp's template engine of choice
 const exphbs = require('express-handlebars');
-const hbs = exphbs.create({});
+//pass helpers
+const hbs = exphbs.create({ helpers });
 
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
@@ -43,5 +46,5 @@ app.set('view engine', 'handlebars');
 // sequelize.sync() method to establish the connection to the database
 //force: true drops all tables every time the server runs 
 sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log(`Now listening on PORT ${PORT}`));
+    app.listen(PORT, () => console.log(`Now listening on PORT ${PORT}`));
 });
